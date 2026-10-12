@@ -59,4 +59,11 @@ body{background:#f3f6fb!important;color:#172746!important}
 .admin-login-card{width:100%;max-width:430px;padding:32px;background:#fff;border:1px solid #dfe7f3;border-radius:20px;box-shadow:0 20px 60px #17274612}
 .admin-login-card .field{width:100%}.admin-login-card label{color:#243b62}.admin-login-card .brand-mark{background:#2b70ff}.admin-login-card h1{color:#172746}
 @media(max-width:480px){.admin-login-card{padding:24px}.pos-grid>div:first-child>div:nth-child(3) .menu-card{height:108px!important}}
-@media(max-width:950px){.pos-grid>div:first-child>div:nth-child(2){background:#fff!important}}
+/* POS menu: category controls become a vertical left sidebar beside dishes. */
+.pos-grid>div:first-child{display:grid!important;grid-template-columns:156px minmax(0,1fr)!important;column-gap:14px!important;align-content:start!important}
+.pos-grid>div:first-child>div:first-child{grid-column:1/-1!important}
+.pos-grid>div:first-child>div:nth-child(2){grid-column:1!important;grid-row:2/span 2!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:6px!important;padding:10px!important;border-radius:14px!important;align-self:start!important;position:sticky!important;top:100px!important}
+.pos-grid>div:first-child>div:nth-child(2) button{width:100%!important;justify-content:flex-start!important;text-align:left!important;min-height:40px!important;padding:9px 10px!important;border-radius:9px!important}
+.pos-grid>div:first-child>div:nth-child(3){grid-column:2!important;min-width:0!important}
+@media(max-width:950px){.pos-grid>div:first-child{grid-template-columns:120px minmax(0,1fr)!important}.pos-grid>div:first-child>div:nth-child(2){position:static!important}}
+@media(max-width:560px){.pos-grid>div:first-child{grid-template-columns:1fr!important}.pos-grid>div:first-child>div:first-child,.pos-grid>div:first-child>div:nth-child(2),.pos-grid>div:first-child>div:nth-child(3){grid-column:1!important;grid-row:auto!important}.pos-grid>div:first-child>div:nth-child(2){flex-direction:row!important;overflow-x:auto!important}.pos-grid>div:first-child>div:nth-child(2) button{width:auto!important;white-space:nowrap!important}}
