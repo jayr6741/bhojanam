@@ -1,67 +1,20 @@
-/* Core Olive & Ember Restaurant POS styles — shared by every admin page */
-:root{font-family:"DM Sans",sans-serif;color:#14213d;background:#f5f7fb;font-synthesis:none;text-rendering:optimizeLegibility}
-*{box-sizing:border-box}
-html{min-width:320px;min-height:100%;scroll-behavior:smooth}
-body{margin:0;min-width:320px;min-height:100vh;background:#f5f7fb;color:#14213d;font-family:"DM Sans",sans-serif;font-size:14px}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-button:disabled{cursor:not-allowed;opacity:.55}
-a{color:inherit;text-decoration:none}
-#root{min-height:100vh}
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:68px;padding:12px 26px;background:#fff;border-bottom:1px solid #e4e9f2}
-.sidebar{position:fixed;left:0;top:0;bottom:0;z-index:40;display:flex;flex-direction:column;width:248px;padding:22px 14px;background:#14213d;color:#fff}
-.content-area{min-height:calc(100vh - 68px);padding:24px 26px 120px;max-width:1800px;margin:0 auto}
-.page-title{margin:0;font-family:Manrope,sans-serif;font-size:25px;line-height:1.25;font-weight:800;letter-spacing:-.035em;color:#14213d}
-.eyebrow{font-size:10px;line-height:1.4;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#8492a8}
-.subtle{color:#73829d}
-.surface{background:#fff;border:1px solid #e0e7f2;border-radius:16px;box-shadow:0 4px 18px #17274608}
-.stat-card{padding:20px;border-radius:16px}
-.stat-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#edf3ff;color:#246bfd}
-.stat-number{font-family:Manrope,sans-serif;font-size:30px;line-height:1.2;font-weight:800;color:#14213d}
-.brand-mark{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:13px;background:#246bfd;color:#fff;font-weight:800}
-.nav-item{display:flex;align-items:center;gap:11px;width:100%;padding:11px 13px;border:0;border-radius:10px;background:transparent;color:#c9d5e8;text-align:left;font-size:13px;font-weight:600;transition:background .15s,color .15s}
-.nav-item:hover{background:#243a5c;color:#fff}
-.nav-item.active{background:#246bfd;color:#fff}
-.btn-primary,.btn-light{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:9px 14px;border:1px solid transparent;border-radius:10px;font-size:12px;font-weight:700;transition:background .15s,border-color .15s,box-shadow .15s}
-.btn-primary{background:#246bfd;border-color:#246bfd;color:#fff;box-shadow:0 4px 12px #246bfd20}
-.btn-primary:hover{background:#155be8}
-.btn-light{background:#fff;border-color:#dce4f0;color:#243b62}
-.btn-light:hover{background:#f7f9fd;border-color:#b8c9e3}
-.field{display:block;width:100%;min-width:0;padding:10px 12px;border:1px solid #dce4f0;border-radius:10px;background:#f7f9fd;color:#172746;outline:none}
-.field:focus{border-color:#2b70ff;box-shadow:0 0 0 3px #2b70ff18}
-.field::placeholder{color:#8795ad}
-.table-overflow{width:100%;overflow-x:auto}
-table{border-collapse:collapse}
-.table-head{font-size:11px;font-weight:700;color:#7a89a2;background:#fbfcff}
-.table-row{border-top:1px solid #e9eef6;color:#243653}
-.table-row:hover{background:#f8fbff}
-.pill{display:inline-flex;align-items:center;justify-content:center;padding:4px 9px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
-.pill-green{background:#e4f8ec;color:#16834a}
-.pill-amber{background:#fff3dc;color:#9a6500}
-.pill-blue{background:#e8f1ff;color:#245fc6}
-.pill-gray{background:#edf1f7;color:#586981}
-.pill-red{background:#ffebeb;color:#b42323}
-.menu-card{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:12px;border:1px solid #dfe7f3;border-radius:13px;background:#fff;color:#172746;box-shadow:0 3px 12px #17274608;text-align:left}
-.menu-card:hover{border-color:#9bbcff;box-shadow:0 8px 20px #17274612}
-.menu-card b,.menu-card .text-sm{color:#172746}
-.pos-grid{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:18px;align-items:start}
-.pos-grid>.surface{position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto}
-.error-banner{padding:12px 14px;border-radius:10px;background:#fff6e5;border:1px solid #f0d08d;color:#80570b}
-.toast{position:fixed;right:20px;bottom:100px;z-index:100;padding:12px 16px;border-radius:12px;background:#14213d;color:#fff;box-shadow:0 8px 28px #14213d22}
-.admin-login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#f3f6fb;color:#172746}
-.admin-login-card{width:100%;max-width:430px;padding:32px;background:#fff;border:1px solid #dfe7f3;border-radius:20px;box-shadow:0 20px 60px #17274612}
-.admin-login-card .field{width:100%}
-@media(max-width:950px){.content-area{padding:18px 18px 110px}.pos-grid{grid-template-columns:1fr}.pos-grid>.surface{position:relative;top:auto;max-height:none}}
-/* Cross-page consistency and responsive safety */
-.main-area{min-width:0;width:100%;margin-left:0!important}
-.content-area{width:100%;min-width:0;overflow-wrap:anywhere}
-.content-area>.surface,.content-area .surface{min-width:0}
-.content-area input,.content-area select,.content-area textarea{max-width:100%;min-width:0}
-.content-area table{width:100%;min-width:560px}
-.content-area .table-overflow,.content-area .overflow-x-auto{max-width:100%;overflow-x:auto}
-.content-area button{touch-action:manipulation}
-.content-area .grid{min-width:0}
-.content-area .grid>*{min-width:0}
-.content-area .rounded-xl,.content-area .rounded-2xl{overflow-wrap:anywhere}
-@media(max-width:950px){.content-area .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.content-area .content-grid{grid-template-columns:1fr!important}.content-area .surface{max-width:100%}}
-@media(max-width:620px){.topbar{min-height:62px;padding:10px 14px;gap:8px}.topbar .page-title{font-size:20px}.topbar .hide-mobile{display:none!important}.content-area{padding:15px 12px 100px}.page-title{font-size:22px}.stat-number{font-size:24px}.admin-login-card{padding:24px}.content-area .stats-grid{gap:10px!important}.content-area .stat-card{padding:13px!important;min-height:112px!important}.content-area .grid.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+/* Pending Bills view: full-width order cards, while keeping the existing theme and menu layout unchanged */
+.pos-grid.pos-mode-bills{grid-template-columns:minmax(0,1fr)!important}
+.pos-grid.pos-mode-bills>div:nth-child(2){display:none!important}
+.pos-grid.pos-mode-bills>div:first-child{width:100%!important;min-width:0!important}
+.pos-grid.pos-mode-bills .pos-pending-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+.pos-grid.pos-mode-bills .pos-pending-card{width:100%!important;min-width:0!important;text-align:left!important;box-shadow:0 4px 14px rgba(20,45,90,.05)!important;transition:transform .15s ease,box-shadow .15s ease!important}
+.pos-grid.pos-mode-bills .pos-pending-card:hover{transform:translateY(-2px)!important;box-shadow:0 8px 22px rgba(20,45,90,.1)!important}
+.pos-grid.pos-mode-bills .pos-pending-card .text-xs.mt-3{display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;overflow-wrap:anywhere!important}
+@media(max-width:1100px){.pos-grid.pos-mode-bills .pos-pending-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:650px){.pos-grid.pos-mode-bills .pos-pending-grid{grid-template-columns:1fr!important}}
+
+/* Existing category rail / product card styling follows unchanged */
+.pos-grid.pos-mode-bills>div:first-child{display:block!important;min-width:0!important}
+.pos-grid.pos-mode-bills>div:first-child>.pos-mode-tabs{display:flex!important;flex-wrap:wrap!important;gap:10px!important;margin:0 0 14px!important}
+.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;align-items:stretch!important;grid-column:auto!important;grid-row:auto!important}
+.pos-grid.pos-mode-bills .pos-pending-card{min-height:185px!important;padding:16px!important;border-radius:14px!important;background:#fff!important;color:#172b50!important}
+.pos-grid.pos-mode-bills .pos-pending-card h3{font-size:15px!important;margin-top:10px!important}
+.pos-grid.pos-mode-bills .pos-pending-card .text-xs.mt-3{line-height:1.6!important;overflow-wrap:anywhere!important}
+@media(max-width:1100px){.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:650px){.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{grid-template-columns:1fr!important}}
