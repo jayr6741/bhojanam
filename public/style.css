@@ -6,6 +6,11 @@
 .pos-grid>div:first-child>.pos-mode-tabs button{width:auto!important;white-space:nowrap!important;text-align:center!important;padding:11px 16px!important;border:1px solid #dbe5f5!important;border-radius:11px!important;background:#fff!important;color:#30476b!important;font-size:12px!important;font-weight:750!important;transition:all .18s ease}
 .pos-grid>div:first-child>.pos-mode-tabs button.bg-ink{background:#286bff!important;border-color:#286bff!important;color:#fff!important;box-shadow:0 5px 14px #286bff2b}
 .pos-pending-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+/* Billing: show pending bill cards in a three-column row on desktop. */
+.pos-grid>div:first-child>.pos-mode-tabs+div{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
+.pos-grid>div:first-child>.pos-mode-tabs+div>.pos-pending-card{width:100%!important;min-width:0!important}
+@media(max-width:1200px){.pos-grid>div:first-child>.pos-mode-tabs+div{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:560px){.pos-grid>div:first-child>.pos-mode-tabs+div{grid-template-columns:1fr!important}}
 .pos-pending-card{width:100%;min-width:0;min-height:184px;padding:17px!important;display:flex;flex-direction:column;align-items:stretch;text-align:left;background:#fff!important;color:#172b50!important;border:1px solid #dce6f5!important;border-radius:16px!important;box-shadow:0 5px 18px #1b37640a;transition:transform .18s,border-color .18s,box-shadow .18s}
 .pos-pending-card:hover{transform:translateY(-2px);border-color:#8bb2ff!important;box-shadow:0 10px 26px #1b376412}
 .pos-pending-card.border-blue-500{border:2px solid #286bff!important;background:#f4f8ff!important;box-shadow:0 8px 22px #286bff20}
