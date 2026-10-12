@@ -1,8 +1,10 @@
 import { db } from 'hatchable';
-export const access = 'admin';
+import { requirePermission } from '../../lib/pos-auth.js';
+export const access = 'public';
 export const methods = ['GET','PUT','POST'];
 export default async function(req,res){
  try {
+  const user=await requirePermission(req,res,req.method==='GET'?'view_tables':'manage_tables');if(!user)return;
   if(req.method==='GET'){const r=await db.query('SELECT number,seats,status,updated_at FROM restaurant_tables ORDER BY number');return res.json({tables:r.rows});}
   const b=req.body||{};
   if(req.method==='POST'){const max=await db.query('SELECT COALESCE(max(number),0)::int AS n FROM restaurant_tables');const number=Math.max(0,max.rows[0].n)+1;const seats=Math.max(1,Math.min(20,Math.floor(Number(b.seats)||4)));const r=await db.query('INSERT INTO restaurant_tables(number,seats,status) VALUES($1,$2,\'Available\') RETURNING number,seats,status,updated_at',[number,seats]);return res.status(201).json({ok:true,table:r.rows[0]});}

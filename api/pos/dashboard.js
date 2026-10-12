@@ -1,8 +1,10 @@
 import { db } from 'hatchable';
-export const access = 'admin';
+import { requirePermission } from '../../lib/pos-auth.js';
+export const access = 'public';
 export const methods = ['GET'];
 export default async function (req, res) {
   try {
+    const user = await requirePermission(req,res,'view_dashboard'); if(!user)return;
     const [orders, customers, tables, menu] = await Promise.all([
       db.query("SELECT count(*)::int AS count, COALESCE(sum((payload->>'total')::numeric),0)::numeric AS revenue FROM restaurant_orders WHERE created_at >= date_trunc('day', now()) AND status <> 'Cancelled'"),
       db.query('SELECT count(*)::int AS count FROM restaurant_customers'),

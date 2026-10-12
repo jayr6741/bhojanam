@@ -1,8 +1,10 @@
 import { db } from 'hatchable';
-export const access = 'admin';
+import { requirePermission } from '../../lib/pos-auth.js';
+export const access = 'public';
 export const methods = ['GET','POST','PUT'];
 export default async function (req, res) {
   try {
+    const user = await requirePermission(req,res,req.method==='GET'?'view_orders':req.method==='POST'?'create_bill':'update_order_status'); if(!user)return;
     if (req.method === 'GET') {
       const r = await db.query('SELECT id, payload, status, verified, created_at FROM restaurant_orders ORDER BY created_at DESC LIMIT 300');
       return res.json({ orders: r.rows.map(x => ({ ...x.payload, id:x.id, status:x.status, verified:x.verified, createdAt:x.created_at })) });
