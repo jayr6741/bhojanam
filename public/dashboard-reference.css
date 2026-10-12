@@ -56,3 +56,24 @@ body{background:#f3f7fd!important;color:#102653!important}
 .toast{background:#10264a!important;border-color:#284875!important}
 @media(max-width:950px){.content-area{padding:18px 18px 38px!important}.stats-grid{gap:12px!important}}
 @media(max-width:620px){.topbar{height:68px!important;padding:0 14px!important}.content-area{padding:15px 12px 32px!important}.stat-card{min-height:118px!important;padding:14px!important}.stat-number{font-size:24px!important}}
+/* Reference-match refinements: tighter typography, POS dock and dashboard spacing */
+.topbar{display:flex!important;gap:20px!important}
+.topbar>div:first-child{min-width:220px}
+.topbar:before{content:"🍴 Olive & Ember  |  RESTAURANT POS";display:none}
+.content-area .stats-grid{gap:16px!important}
+.content-area .stat-card{min-height:158px!important;border-radius:17px!important;padding:20px 22px!important}
+.content-area .stat-card .stat-icon{width:48px!important;height:48px!important;border-radius:13px!important;font-size:21px!important}
+.content-area .stat-card .stat-number{font-size:31px!important;font-weight:800!important}
+.content-area .stat-card>div:first-child{margin-bottom:12px!important}
+.content-area .content-grid>.surface{min-height:360px!important;border-radius:18px!important}
+.content-area .content-grid>.surface:nth-child(2){padding:20px!important}
+.content-area .content-grid .grid.grid-cols-2>button{display:flex!important;align-items:center!important;gap:14px!important;min-height:90px!important;padding:15px!important}
+.content-area .content-grid .grid.grid-cols-2>button .text-xl{display:grid!important;place-items:center!important;width:48px!important;height:48px!important;flex-shrink:0!important;background:#dceaff!important;border-radius:13px!important;margin:0!important;font-size:23px!important}
+.content-area .content-grid .grid.grid-cols-2>button:nth-child(2) .text-xl{background:#e8e0ff!important;color:#7547ff!important}
+.content-area .content-grid .grid.grid-cols-2>button:nth-child(3) .text-xl{background:#ffead4!important;color:#ef7900!important}
+.content-area .content-grid .grid.grid-cols-2>button:nth-child(4) .text-xl{background:#d7f6e8!important;color:#05a75b!important}
+.sidebar{left:50%!important;right:auto!important;bottom:14px!important;top:auto!important;transform:translateX(-50%)!important;width:max-content!important;max-width:calc(100vw - 40px)!important;height:68px!important;padding:7px 10px!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;z-index:80!important;background:#092b69!important;color:#fff!important;border:1px solid #214987!important;border-radius:17px!important;box-shadow:0 14px 32px #092b6930!important}
+.sidebar>nav .nav-item{padding:13px 14px!important;border-radius:11px!important;font-size:12px!important}
+.sidebar>nav .nav-item.active{background:#246bfd!important;box-shadow:0 3px 10px #246bfd55!important}
+.main-area{padding-bottom:96px!important}
+@media(max-width:900px){.sidebar{left:10px!important;right:10px!important;bottom:8px!important;transform:none!important;width:auto!important;max-width:none!important;height:58px!important}.sidebar>nav .nav-item{padding:9px 10px!important}.content-area .stats-grid{gap:10px!important}}
