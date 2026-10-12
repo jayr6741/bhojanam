@@ -1,8 +1,62 @@
-/* Compact POS dish cards only: preserve all colors and page layout */
+/* Approved light theme palette — preserve across all POS pages */
+body{background:#f3f6fb!important;color:#172746!important}
+.sidebar{background:#172746!important;color:#fff!important;border-right:1px solid #243a5c!important}
+.brand-mark{background:#2b70ff!important}
+.nav-item{color:#c9d5e8!important}
+.nav-item:hover{background:#243a5c!important;color:#fff!important}
+.nav-item.active{background:#2b70ff!important;color:#fff!important}
+.topbar{background:#fff!important;border-bottom:1px solid #dfe6f1!important;box-shadow:0 2px 12px #17274608!important;color:#172746!important}
+.eyebrow{color:#8492a8!important}
+.page-title{color:#172746!important}
+.subtle{color:#73829d!important}
+.surface,.stat-card{background:#fff!important;border:1px solid #e0e7f2!important;box-shadow:0 4px 18px #17274608!important;color:#172746!important}
+.surface .subtle,.surface .eyebrow{color:#73829d!important}
+.stat-icon{background:#edf3ff!important;color:#2b70ff!important}
+.stat-number{color:#172746!important}
+.btn-primary{background:#2b70ff!important;border-color:#2b70ff!important;color:#fff!important}
+.btn-primary:hover{background:#1e5fe6!important}
+.btn-light{background:#fff!important;border:1px solid #dce4f0!important;color:#243b62!important}
+.field{background:#f7f9fd!important;border:1px solid #dce4f0!important;color:#172746!important}
+.field::placeholder{color:#8795ad!important}
+.field:focus{border-color:#2b70ff!important;box-shadow:0 0 0 3px #2b70ff18!important}
+.table-head{color:#7a89a2!important}
+.table-row{border-color:#e9eef6!important;color:#243653!important}
+.table-row td,.table-row b{color:#243653!important}
+.pill-green{background:#e4f8ec!important;color:#16834a!important}
+.pill-amber{background:#fff3dc!important;color:#9a6500!important}
+.pill-blue{background:#e8f1ff!important;color:#245fc6!important}
+.pill-gray{background:#edf1f7!important;color:#586981!important}
+.pill-red{background:#ffebeb!important;color:#b42323!important}
+.menu-card{background:#fff!important;border:1px solid #dfe7f3!important;color:#172746!important;box-shadow:0 3px 12px #17274608!important;border-radius:13px!important}
+.menu-card:hover{border-color:#9bbcff!important;box-shadow:0 8px 20px #17274612!important}
+.menu-card b,.menu-card .text-sm{color:#172746!important}
+.menu-card .subtle{color:#7b89a2!important}
+.pos-grid>div:first-child>div:nth-child(2){background:#fff!important;border-color:#e0e7f2!important;box-shadow:0 3px 12px #17274608!important}
+.pos-grid>div:first-child>div:nth-child(2) button{background:#f5f7fc!important;border:1px solid #e1e7f1!important;color:#344969!important}
+.pos-grid>div:first-child>div:nth-child(2) button.bg-ink{background:#2b70ff!important;color:#fff!important;border-color:#2b70ff!important}
+.pos-grid>.surface{background:#fff!important;color:#172746!important;border-color:#dfe7f3!important}
+.pos-grid>.surface .subtle{color:#73829d!important}
+.pos-grid .text-olive{color:#2b70ff!important}
+.pos-grid .text-stone-600,.pos-grid .text-stone-500{color:#73829d!important}
+.pos-grid .bg-paper{background:#f5f8fd!important}
+.pos-grid .rounded-lg.bg-lime{background:#edf3ff!important;color:#2b70ff!important}
+.pos-grid .border-line{border-color:#e4eaf3!important}
+.table-tile{background:#fff!important;border-color:#e0e7f2!important;color:#172746!important}
+.table-tile.occupied{background:#fff7f0!important;border-color:#f0c99b!important}
+.error-banner{background:#fff6e5!important;border:1px solid #f0d08d!important;color:#80570b!important}
+.toast{background:#172746!important;color:#fff!important;border:1px solid #263e65!important}
+.sidebar-bottom-copy{background:#24354e!important;color:#fff!important}
+.sidebar-caption{color:#8798b2!important}
+/* Keep product images and placeholder boxes hidden */
+.menu-card .menu-icon,.menu-card .menu-icon-no-image{display:none!important}
+/* Compact dish cards only; palette/layout elsewhere unchanged */
 .pos-grid>div:first-child>div:nth-child(3) .menu-card{min-height:0!important;height:116px!important;padding:10px 12px!important;gap:5px!important}
-.pos-grid>div:first-child>div:nth-child(3) .menu-card .menu-icon,.pos-grid>div:first-child>div:nth-child(3) .menu-card .menu-icon-no-image{display:none!important}
 .pos-grid>div:first-child>div:nth-child(3) .menu-card .text-\[10px\]{font-size:9px!important;line-height:1.1!important}
 .pos-grid>div:first-child>div:nth-child(3) .menu-card b{font-size:12px!important;line-height:1.2!important}
 .pos-grid>div:first-child>div:nth-child(3) .menu-card>div:last-child{margin-top:auto!important}
 .pos-grid>div:first-child>div:nth-child(3) .menu-card .rounded-lg.bg-lime{padding:5px 7px!important}
-@media(max-width:620px){.pos-grid>div:first-child>div:nth-child(3) .menu-card{height:108px!important}}
+.admin-login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#f3f6fb;color:#172746}
+.admin-login-card{width:100%;max-width:430px;padding:32px;background:#fff;border:1px solid #dfe7f3;border-radius:20px;box-shadow:0 20px 60px #17274612}
+.admin-login-card .field{width:100%}.admin-login-card label{color:#243b62}.admin-login-card .brand-mark{background:#2b70ff}.admin-login-card h1{color:#172746}
+@media(max-width:480px){.admin-login-card{padding:24px}.pos-grid>div:first-child>div:nth-child(3) .menu-card{height:108px!important}}
+@media(max-width:950px){.pos-grid>div:first-child>div:nth-child(2){background:#fff!important}}
