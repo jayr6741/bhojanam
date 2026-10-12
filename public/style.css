@@ -33,3 +33,17 @@
 .pos-grid.pos-mode-bills .pos-pending-card .text-xs.mt-3{line-height:1.6!important;overflow-wrap:anywhere!important}
 @media(max-width:1100px){.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:650px){.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{grid-template-columns:1fr!important}}
+/* Pending bill cards: clear, readable, POS-style hierarchy */
+.pos-grid.pos-mode-bills .pos-pending-grid{width:100%!important;align-items:stretch!important;gap:18px!important}
+.pos-grid.pos-mode-bills .pos-pending-card{position:relative!important;box-sizing:border-box!important;min-height:235px!important;padding:20px!important;border:1px solid #dce6f5!important;border-radius:16px!important;background:#fff!important;color:#142b52!important;text-align:left!important;box-shadow:0 6px 20px rgba(24,52,96,.07)!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important}
+.pos-grid.pos-mode-bills .pos-pending-card:hover{border-color:#8fb3ff!important;box-shadow:0 12px 28px rgba(37,99,235,.13)!important;transform:translateY(-2px)!important}
+.pos-grid.pos-mode-bills .pos-pending-card>div:first-child{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;width:100%!important;flex-wrap:nowrap!important}
+.pos-grid.pos-mode-bills .pos-pending-card>div:first-child .pill{display:inline-flex!important;align-items:center!important;padding:6px 10px!important;border-radius:999px!important;background:#fff2df!important;color:#a65b00!important;font-size:11px!important;font-weight:700!important;white-space:nowrap!important}
+.pos-grid.pos-mode-bills .pos-pending-card>div:first-child b{font-size:19px!important;font-weight:800!important;color:#122d59!important;white-space:nowrap!important}
+.pos-grid.pos-mode-bills .pos-pending-card h3{font-size:17px!important;line-height:1.4!important;font-weight:750!important;color:#142b52!important;margin:18px 0 0!important}
+.pos-grid.pos-mode-bills .pos-pending-card p{font-size:12px!important;color:#7183a0!important;margin-top:7px!important;line-height:1.5!important}
+.pos-grid.pos-mode-bills .pos-pending-card>div:nth-of-type(2){font-size:12px!important;line-height:1.65!important;color:#4b607f!important;margin-top:16px!important;min-height:40px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;overflow-wrap:anywhere!important}
+.pos-grid.pos-mode-bills .pos-pending-card>div:last-child{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;flex-wrap:nowrap!important;width:100%!important;border-top:1px solid #e8eef7!important;padding-top:14px!important;margin-top:auto!important;color:#7183a0!important;font-size:12px!important}
+.pos-grid.pos-mode-bills .pos-pending-card>div:last-child span:last-child{color:#245ff5!important;font-weight:750!important;white-space:nowrap!important}
+@media(max-width:1100px){.pos-grid.pos-mode-bills .pos-pending-card{min-height:220px!important;padding:16px!important}}
+@media(max-width:650px){.pos-grid.pos-mode-bills .pos-pending-card{min-height:210px!important}.pos-grid.pos-mode-bills .pos-pending-card h3{font-size:16px!important}}
