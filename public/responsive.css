@@ -54,6 +54,11 @@ input,select,textarea,button{max-width:100%}
 .qr-print-image{width:180px!important;height:180px!important;max-width:100%!important;object-fit:contain!important}
 @media print{
  body{background:#fff!important;overflow:visible!important}
+ body *{visibility:visible!important}
+ body .content-area>div>p,body .content-area>div>div:first-child,body .content-area>div>div:first-child *{display:none!important}
+ body .content-area>div>div:last-child>div:first-child,body .content-area>div>div:last-child>div:first-child *{display:none!important}
+ body .content-area>div>div:last-child>div:last-child .qr-print-card .text-xs.subtle{display:none!important}
+ body .content-area>div>div:last-child>div:last-child .qr-print-card a{display:none!important}
  .topbar,.sidebar,.no-print,button,.eyebrow,.page-title{display:none!important}
  .content-area{padding:0!important;margin:0!important;max-width:none!important}
  .content-grid{display:block!important}
