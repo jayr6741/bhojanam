@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS restaurant_table_qr_tokens (table_number INTEGER PRIMARY KEY REFERENCES restaurant_tables(number) ON DELETE CASCADE, token TEXT NOT NULL UNIQUE, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS idx_restaurant_table_qr_tokens_token ON restaurant_table_qr_tokens(token);

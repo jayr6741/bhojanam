@@ -1,11 +1,12 @@
 import { db } from 'hatchable';
+import { randomBytes } from 'node:crypto';
 import { requirePermission } from '../../lib/pos-auth.js';
 export const access = 'public';
 export const methods = ['GET','PUT','POST','DELETE'];
 export default async function(req,res){
  try {
   const user=await requirePermission(req,res,req.method==='GET'?'view_tables':'manage_tables');if(!user)return;
-  if(req.method==='GET'){const r=await db.query('SELECT number,seats,status,updated_at FROM restaurant_tables ORDER BY number');return res.json({tables:r.rows});}
+  if(req.method==='GET'){const r=await db.query('SELECT number,seats,status,updated_at FROM restaurant_tables ORDER BY number');for(const t of r.rows){let tokenRow=await db.query('SELECT token FROM restaurant_table_qr_tokens WHERE table_number=$1',[t.number]);if(!tokenRow.rows.length){const token=randomBytes(24).toString('base64url');await db.query('INSERT INTO restaurant_table_qr_tokens(table_number,token) VALUES($1,$2) ON CONFLICT(table_number) DO NOTHING',[t.number,token]);tokenRow=await db.query('SELECT token FROM restaurant_table_qr_tokens WHERE table_number=$1',[t.number]);}t.qrToken=tokenRow.rows[0]?.token||null;}return res.json({tables:r.rows});}
   const b=req.body||{};
   if(req.method==='DELETE'){
    const number=Math.floor(Number(b.number));if(!number)return res.status(400).json({error:'Valid table number is required.'});
