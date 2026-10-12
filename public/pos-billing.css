@@ -1,0 +1,38 @@
+/* POS checkout refinement: compact menu tiles, clear cart controls, and space reserved for the floating dock. */
+.content-area:has(.pos-grid){padding-bottom:112px!important;max-width:1800px!important}
+.pos-grid{grid-template-columns:minmax(0,1fr) 350px!important;gap:18px!important}
+.pos-grid>div:first-child>div:nth-child(2){max-height:calc(100vh - 170px);overflow:auto}
+.pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+.pos-grid .menu-card{min-height:108px!important;height:108px!important;padding:10px 11px!important;gap:5px!important;border-radius:12px!important}
+.pos-grid .menu-card>b{font-size:12px!important;line-height:1.25!important}
+.pos-grid .menu-card>span.text-\[10px\]{font-size:9px!important}
+.pos-grid .menu-card .mt-auto{margin-top:auto!important}
+.pos-grid>.surface{top:94px!important;max-height:calc(100vh - 174px)!important;padding:16px!important;overflow-y:auto!important;scrollbar-width:thin}
+.pos-grid>.surface>div:first-child{margin-bottom:12px!important}
+.pos-grid>.surface .bg-paper{padding:10px!important;margin-top:10px!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px 10px!important}
+.pos-grid>.surface .bg-paper>label{min-width:0!important;font-size:10px!important}
+.pos-grid>.surface .bg-paper>label:first-child{grid-column:1/-1}
+.pos-grid>.surface .bg-paper .field{padding:8px 9px!important;font-size:12px!important;margin-top:5px!important}
+.pos-grid>.surface .border-t{margin-top:12px!important;padding-top:12px!important}
+.pos-grid>.surface .py-9{padding-top:18px!important;padding-bottom:18px!important}
+.pos-grid>.surface .text-2xl{font-size:24px!important}
+.pos-grid>.surface .btn-primary{padding:10px 12px!important}
+@media(max-width:1250px){
+ .pos-grid{grid-template-columns:minmax(0,1fr) 320px!important}
+ .pos-grid>div:first-child{grid-template-columns:112px minmax(0,1fr)!important}
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+ .content-area:has(.pos-grid){padding-bottom:100px!important}
+ .pos-grid{grid-template-columns:1fr!important}
+ .pos-grid>div:first-child{grid-template-columns:1fr!important}
+ .pos-grid>div:first-child>div:nth-child(2){max-height:none}
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .pos-grid>.surface{position:relative!important;top:auto!important;max-height:none!important;overflow:visible!important}
+}
+@media(max-width:560px){
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .pos-grid .menu-card{height:104px!important;min-height:104px!important}
+ .pos-grid>.surface .bg-paper{grid-template-columns:1fr!important}
+ .pos-grid>.surface .bg-paper>label:first-child{grid-column:auto}
+}
