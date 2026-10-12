@@ -36,3 +36,16 @@
  .pos-grid>.surface .bg-paper{grid-template-columns:1fr!important}
  .pos-grid>.surface .bg-paper>label:first-child{grid-column:auto}
 }
+
+/* Billing checkout polish: keep totals and the payment action easy to reach. */
+.pos-grid{align-items:start!important;grid-template-columns:minmax(0,1fr) minmax(320px,360px)!important;gap:16px!important}
+.pos-grid>.surface{position:sticky!important;top:104px!important;max-height:calc(100vh - 122px)!important;overflow-y:auto!important;overscroll-behavior:contain;border-radius:18px!important;padding:16px!important}
+.pos-grid>.surface>div:first-child{padding-bottom:10px!important;border-bottom:1px solid #e6edf8!important}
+.pos-grid>.surface .border-t{border-color:#e6edf8!important}
+.pos-grid>.surface .border-t+button.btn-primary{position:sticky!important;bottom:-1px!important;z-index:3!important;box-shadow:0 -8px 18px #ffffffed!important;border-radius:11px!important;min-height:44px!important;margin-top:12px!important}
+.pos-grid>.surface .bg-paper{border:1px solid #e3ebf8!important;border-radius:13px!important}
+.pos-grid>.surface .field{min-height:38px!important;border-radius:9px!important}
+.pos-grid>.surface .text-2xl{font-size:25px!important;font-weight:800!important;letter-spacing:-.03em!important}
+.pos-grid>.surface .btn-primary:disabled{opacity:.55!important}
+@media(max-width:900px){.pos-grid{grid-template-columns:minmax(0,1fr)!important}.pos-grid>.surface{position:relative!important;top:auto!important;max-height:none!important;overflow:visible!important}.pos-grid>.surface .border-t+button.btn-primary{position:static!important;box-shadow:none!important}}
+@media(min-width:901px) and (max-width:1250px){.pos-grid{grid-template-columns:minmax(0,1fr) 320px!important}.pos-grid>.surface{padding:12px!important}}
