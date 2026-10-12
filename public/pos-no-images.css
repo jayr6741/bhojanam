@@ -1,0 +1,7 @@
+/* Text-and-icon POS cards: no product photos */
+.menu-icon-no-image{display:grid;place-items:center;background:linear-gradient(145deg,#eaf0fb,#dbe6f6);color:#246bfd;height:78px}
+.menu-icon-no-image span{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#fff;border:1px solid #d4e1f6;font-size:24px;font-weight:800;box-shadow:0 5px 12px #14213d0b}
+.menu-card{min-height:158px;padding:12px;gap:7px}
+.menu-card .menu-icon{flex:0 0 auto}
+.menu-card .text-\[10px\]{font-size:10px}
+@media(min-width:1400px){.menu-icon-no-image{height:78px}}
