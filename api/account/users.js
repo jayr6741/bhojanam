@@ -36,7 +36,7 @@ export default async function(req,res){
       const roleId=String(b.roleId||''),name=String(b.name||'').trim().slice(0,50);let permissions=Array.isArray(b.permissions)?[...new Set(b.permissions.filter(x=>PERMISSIONS.includes(x)))]:[];
       if(!roleId||!name)return res.status(400).json({error:'Role and role name are required.'});
       const oldRole=await db.query('SELECT name,is_system FROM pos_roles WHERE id=$1',[roleId]);if(!oldRole.rows.length)return res.status(404).json({error:'Role not found.'});
-      if(oldRole.rows[0].name==='Admin'&&!permissions.includes('user_management'))permissions.push('user_management');
+      if(oldRole.rows[0].name==='Admin'){if(!permissions.includes('user_management'))permissions.push('user_management');if(!permissions.includes('view_dashboard'))permissions.push('view_dashboard');}
       const r=await db.query('UPDATE pos_roles SET name=CASE WHEN is_system THEN name ELSE $2 END,permissions=$3::jsonb,updated_at=now() WHERE id=$1 RETURNING id,name,permissions,is_system',[roleId,name,JSON.stringify(permissions)]);
       if(!r.rows.length)return res.status(404).json({error:'Role not found.'});
       return res.json({ok:true,role:{...r.rows[0],isSystem:r.rows[0].is_system}});
