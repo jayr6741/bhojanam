@@ -21,14 +21,6 @@
 .pos-grid.pos-mode-bills .pos-pending-card>div:last-child{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;width:100%!important;flex-wrap:wrap!important;margin-top:auto!important;padding-top:12px!important}
 .pos-grid.pos-mode-bills .pos-pending-card .pill{flex:0 0 auto!important}
 .pos-grid.pos-mode-bills .pos-pending-card b{overflow-wrap:anywhere!important}
-/* Final visual polish for pending bills: distinct cards with comfortable spacing */
-.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{gap:18px!important;padding:2px 2px 8px!important}
-.pos-grid.pos-mode-bills .pos-pending-card{border:1px solid #dbe5f4!important;border-radius:16px!important;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;box-shadow:0 5px 18px rgba(20,45,90,.07)!important;padding:20px!important;min-height:220px!important}
-.pos-grid.pos-mode-bills .pos-pending-card:hover{border-color:#9bbcff!important;box-shadow:0 10px 26px rgba(37,99,235,.12)!important;transform:translateY(-2px)!important}
-.pos-grid.pos-mode-bills .pos-pending-card h3{font-size:16px!important;font-weight:700!important;color:#172b50!important;margin-top:14px!important}
-.pos-grid.pos-mode-bills .pos-pending-card .text-xs.mt-3{color:#526787!important;font-size:12px!important;line-height:1.65!important;margin-top:14px!important;min-height:38px!important}
-.pos-grid.pos-mode-bills .pos-pending-card>div:last-child{border-top:1px solid #e7edf7!important;margin-top:auto!important;padding-top:12px!important;color:#7184a3!important;font-size:12px!important}
-@media(max-width:650px){.pos-grid.pos-mode-bills .pos-pending-card{min-height:205px!important;padding:16px!important}}
 .pos-grid.pos-mode-bills .pos-pending-card h3{font-size:15px!important;margin-top:10px!important}
 .pos-grid.pos-mode-bills .pos-pending-card .text-xs.mt-3{line-height:1.6!important;overflow-wrap:anywhere!important}
 @media(max-width:1100px){.pos-grid.pos-mode-bills>div:first-child>.pos-pending-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
