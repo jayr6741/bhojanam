@@ -69,7 +69,7 @@ body{background:#f3f6fb!important;color:#172746!important}
 /* Correct POS layout: only category controls become a sidebar; pending cards and search stay full width. */
 .pos-grid>div:first-child{display:block!important;min-width:0!important}
 .pos-grid>div:first-child>.pos-mode-tabs{display:flex!important;flex-direction:row!important;gap:8px!important;margin-bottom:16px!important}
-.pos-grid>div:first-child>.pos-pending-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;overflow:visible!important;align-items:stretch!important}
+.pos-grid>div:first-child>.pos-pending-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-flow:row!important;gap:12px!important;overflow:visible!important;align-items:stretch!important;min-width:0!important}
 .pos-grid>div:first-child>.pos-pending-grid>.pos-pending-card{width:100%!important;min-width:0!important;min-height:205px!important;max-height:none!important;white-space:normal!important}
 .pos-grid>div:first-child>input.field{width:100%!important;margin-bottom:14px!important}
 .pos-menu-layout{display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;gap:14px!important;align-items:start!important}
@@ -81,7 +81,7 @@ body{background:#f3f6fb!important;color:#172746!important}
 .pos-dish-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;min-width:0!important}
 .pos-dish-grid .menu-card{width:100%!important;min-width:0!important;height:116px!important;min-height:116px!important;padding:12px!important;overflow:hidden!important}
 .pos-dish-grid .menu-card b{overflow-wrap:anywhere!important}
-@media(max-width:1200px){.pos-grid>div:first-child>.pos-pending-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.pos-dish-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:1200px){.pos-grid>div:first-child>.pos-pending-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.pos-dish-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:700px){.pos-menu-layout{grid-template-columns:1fr!important}.pos-category-sidebar{position:static!important;flex-direction:row!important;overflow-x:auto!important}.pos-category-item{width:auto!important;flex:0 0 auto!important}.pos-grid>div:first-child>.pos-pending-grid{grid-template-columns:1fr!important}}
 /* Bind the sidebar layout to the existing menu-mode markup without affecting pending bills. */
 .pos-grid>div:first-child:has(>input.field){display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;column-gap:14px!important;align-items:start!important}
