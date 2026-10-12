@@ -52,4 +52,16 @@ table{border-collapse:collapse}
 .admin-login-card{width:100%;max-width:430px;padding:32px;background:#fff;border:1px solid #dfe7f3;border-radius:20px;box-shadow:0 20px 60px #17274612}
 .admin-login-card .field{width:100%}
 @media(max-width:950px){.content-area{padding:18px 18px 110px}.pos-grid{grid-template-columns:1fr}.pos-grid>.surface{position:relative;top:auto;max-height:none}}
-@media(max-width:620px){.topbar{min-height:62px;padding:10px 14px}.content-area{padding:15px 12px 100px}.page-title{font-size:22px}.stat-number{font-size:24px}.admin-login-card{padding:24px}}
+/* Cross-page consistency and responsive safety */
+.main-area{min-width:0;width:100%;margin-left:0!important}
+.content-area{width:100%;min-width:0;overflow-wrap:anywhere}
+.content-area>.surface,.content-area .surface{min-width:0}
+.content-area input,.content-area select,.content-area textarea{max-width:100%;min-width:0}
+.content-area table{width:100%;min-width:560px}
+.content-area .table-overflow,.content-area .overflow-x-auto{max-width:100%;overflow-x:auto}
+.content-area button{touch-action:manipulation}
+.content-area .grid{min-width:0}
+.content-area .grid>*{min-width:0}
+.content-area .rounded-xl,.content-area .rounded-2xl{overflow-wrap:anywhere}
+@media(max-width:950px){.content-area .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.content-area .content-grid{grid-template-columns:1fr!important}.content-area .surface{max-width:100%}}
+@media(max-width:620px){.topbar{min-height:62px;padding:10px 14px;gap:8px}.topbar .page-title{font-size:20px}.topbar .hide-mobile{display:none!important}.content-area{padding:15px 12px 100px}.page-title{font-size:22px}.stat-number{font-size:24px}.admin-login-card{padding:24px}.content-area .stats-grid{gap:10px!important}.content-area .stat-card{padding:13px!important;min-height:112px!important}.content-area .grid.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
