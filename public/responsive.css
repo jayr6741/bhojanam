@@ -1,0 +1,53 @@
+/* Responsive layout safeguards — preserve existing visual design and behavior. */
+html,body,#root{min-width:0;max-width:100%;overflow-x:hidden}
+img,svg,video,canvas{max-width:100%}
+input,select,textarea,button{max-width:100%}
+.main-area,.content-area,.app-shell,.content-grid,.stats-grid,.surface{min-width:0}
+.table-overflow{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media (max-width:1200px){
+ .content-area{padding-left:22px!important;padding-right:22px!important}
+ .pos-grid{grid-template-columns:minmax(0,1fr) 310px!important;gap:14px!important}
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media (max-width:900px){
+ .topbar{padding-left:20px!important;padding-right:20px!important;height:auto!important;min-height:76px!important;gap:12px!important;flex-wrap:wrap;padding-top:12px!important;padding-bottom:12px!important}
+ .content-area{padding:22px 18px 108px!important}
+ .content-grid{grid-template-columns:minmax(0,1fr)!important}
+ .pos-grid{grid-template-columns:minmax(0,1fr)!important}
+ .pos-grid>div:first-child{grid-template-columns:minmax(0,1fr)!important}
+ .pos-grid>div:first-child>div:nth-child(2){position:static!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;overflow-x:auto!important;gap:7px!important}
+ .pos-grid>div:first-child>div:nth-child(2) button{width:auto!important;min-width:max-content!important}
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .pos-grid>.surface{position:relative!important;top:auto!important;max-height:none!important;overflow:visible!important;width:100%!important}
+ .pos-grid>div:first-child>.pos-pending-grid,.pos-grid>div:first-child>.pos-mode-tabs+div{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .sidebar{max-width:calc(100vw - 16px)!important}
+ .sidebar>nav .nav-label{display:inline!important}
+ .table-overflow table{min-width:620px}
+}
+@media (max-width:620px){
+ .topbar{align-items:flex-start!important}
+ .topbar>.flex{flex-wrap:wrap!important;gap:8px!important}
+ .page-title{font-size:22px!important}
+ .content-area{padding:18px 12px 100px!important}
+ .stats-grid{grid-template-columns:minmax(0,1fr)!important}
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ .pos-grid>div:first-child>.pos-pending-grid,.pos-grid>div:first-child>.pos-mode-tabs+div{grid-template-columns:minmax(0,1fr)!important}
+ .pos-grid>.surface{padding:12px!important}
+ .pos-grid>.surface .bg-paper{grid-template-columns:minmax(0,1fr)!important}
+ .pos-grid>.surface .bg-paper>label:first-child{grid-column:auto}
+ .menu-card{min-height:100px!important}
+ .stat-card{min-height:0!important;padding:16px!important}
+ .surface{overflow-wrap:anywhere}
+ .sidebar{left:6px!important;right:6px!important;max-width:none!important;bottom:6px!important;height:54px!important;padding:4px 6px!important}
+ .sidebar>nav{gap:2px!important}
+ .sidebar>nav .nav-item{padding:8px 9px!important}
+ .sidebar>nav .nav-label{font-size:10px!important}
+ .sidebar>nav .nav-symbol{font-size:13px!important}
+ .toast{left:12px!important;right:12px!important;bottom:68px!important}
+}
+@media (max-width:380px){
+ .pos-grid>div:first-child>div:nth-child(3){grid-template-columns:minmax(0,1fr)!important}
+ .sidebar>nav .nav-item{padding:8px 7px!important}
+ .sidebar>nav .nav-label{font-size:9px!important}
+}
