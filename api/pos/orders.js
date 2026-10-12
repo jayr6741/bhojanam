@@ -12,6 +12,34 @@ export default async function (req, res) {
     const b = req.body || {};
     if (req.method === 'PUT') {
       const id = String(b.id || '').trim();
+      if (b.action === 'settle') {
+        if (!id) return res.status(400).json({error:'Order ID is required.'});
+        const found = await db.query('SELECT id,payload,status,verified FROM restaurant_orders WHERE id=$1',[id]);
+        if (!found.rows.length) return res.status(404).json({error:'Order not found.'});
+        const current = found.rows[0].payload || {};
+        if (current.paidAt || ['Paid','Verified'].includes(found.rows[0].status)) return res.status(409).json({error:'This order is already settled.'});
+        const phone = String(b.phone || current.phone || '').replace(/[^0-9+]/g,'').slice(0,16);
+        const customerName = String(b.customer || current.customer || 'Walk-in customer').trim().slice(0,120);
+        const subtotal = Number(current.subtotal) || (Array.isArray(current.items)?current.items.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0):0);
+        const cfgResult = await db.query("SELECT value FROM restaurant_config WHERE key='loyalty'");
+        const cfg = cfgResult.rows[0]?.value || {earning:10,spend:100,redeemPoints:100,redeemValue:50};
+        let pointsBefore=0, pointsRedeemed=Math.max(0,Math.floor(Number(b.redeemPoints)||0)), discount=0, pointsEarned=0, customerRow=null;
+        if(phone){
+          const cr=await db.query('SELECT phone,name,points,visits FROM restaurant_customers WHERE phone=$1',[phone]);
+          customerRow=cr.rows[0]||null;
+          if(!customerRow){const nr=await db.query("INSERT INTO restaurant_customers(phone,name,points,visits,status) VALUES($1,$2,0,0,'New') ON CONFLICT(phone) DO UPDATE SET name=EXCLUDED.name RETURNING phone,name,points,visits",[phone,customerName]);customerRow=nr.rows[0];}
+          pointsBefore=Number(customerRow.points)||0;
+          if(pointsRedeemed>pointsBefore)return res.status(400).json({error:'Customer does not have enough loyalty points.'});
+          if(pointsRedeemed>0){const unit=Math.max(1,Number(cfg.redeemPoints)||100),reward=Math.max(0,Number(cfg.redeemValue)||0);discount=Math.min(subtotal,Math.floor(pointsRedeemed/unit)*reward);if(discount<=0)return res.status(400).json({error:'Not enough points for a reward.'});pointsRedeemed=Math.floor(discount/(reward||1))*unit;}
+          pointsEarned=Math.floor(Math.max(0,subtotal-discount)/Math.max(1,Number(cfg.spend)||100))*Math.max(0,Number(cfg.earning)||0);
+        } else if(pointsRedeemed>0)return res.status(400).json({error:'Enter customer mobile number to redeem points.'});
+        const taxable=Math.max(0,subtotal-discount),taxRate=Math.max(0,Math.min(28,Number(current.taxRate)||5)),tax=Math.round(taxable*taxRate)/100,total=Math.round(taxable+tax);
+        const updated={...current,customer:customerName,phone,subtotal,discount,redeemPoints:pointsRedeemed,pointsEarned,tax,taxRate,total,paymentMethod:['Cash','UPI','Card'].includes(b.paymentMethod)?b.paymentMethod:'Cash',status:'Paid',paidAt:new Date().toISOString()};
+        await db.query("UPDATE restaurant_orders SET status='Paid',payload=$2::jsonb,verified=true,updated_at=now() WHERE id=$1",[id,JSON.stringify(updated)]);
+        if(customerRow){const balance=Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned;await db.query("UPDATE restaurant_customers SET name=$2,points=$3,visits=visits+1,status=CASE WHEN $3>=300 THEN 'VIP' ELSE 'Active' END,updated_at=now() WHERE phone=$1",[phone,customerName,balance]);}
+        if(updated.tableNumber)await db.query("UPDATE restaurant_tables SET status='Available',updated_at=now() WHERE number=$1",[updated.tableNumber]);
+        return res.json({ok:true,order:updated,loyalty:customerRow?{pointsBefore,pointsRedeemed,pointsEarned,pointsBalance:Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned}:null});
+      }
       const status = ['Pending','Preparing','Ready','Served','Verified','Cancelled'].includes(b.status) ? b.status : null;
       if (!id || !status) return res.status(400).json({ error:'Order ID and valid status are required.' });
       const r = await db.query("UPDATE restaurant_orders SET status=$2, payload=jsonb_set(payload, '{status}', to_jsonb($2::text), true), verified=CASE WHEN $2='Verified' THEN true ELSE verified END, updated_at=now() WHERE id=$1 RETURNING id,payload,status,verified,created_at",[id,status]);
