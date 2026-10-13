@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS restaurant_table_merges (table_number INTEGER PRIMARY KEY REFERENCES restaurant_tables(number) ON DELETE CASCADE, primary_table_number INTEGER NOT NULL REFERENCES restaurant_tables(number) ON DELETE CASCADE, merged_at TIMESTAMPTZ NOT NULL DEFAULT now(), CHECK (table_number <> primary_table_number));
+CREATE INDEX IF NOT EXISTS idx_restaurant_table_merges_primary ON restaurant_table_merges(primary_table_number);

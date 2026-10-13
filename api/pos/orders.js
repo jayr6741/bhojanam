@@ -14,10 +14,13 @@ export default async function (req, res) {
       const id = String(b.id || '').trim();
       if (b.action === 'settle') {
         if (!id) return res.status(400).json({error:'Order ID is required.'});
-        const found = await db.query('SELECT id,payload,status,verified FROM restaurant_orders WHERE id=$1',[id]);
-        if (!found.rows.length) return res.status(404).json({error:'Order not found.'});
-        const current = found.rows[0].payload || {};
-        if (current.paidAt || ['Paid','Verified'].includes(found.rows[0].status)) return res.status(409).json({error:'This order is already settled.'});
+        const ids=[...new Set((Array.isArray(b.ids)?b.ids:[id]).map(x=>String(x||'').trim()).filter(Boolean))];
+        if(!ids.length)return res.status(400).json({error:'Order ID is required.'});
+        const found=await db.query('SELECT id,payload,status,verified FROM restaurant_orders WHERE id=ANY($1::text[]) ORDER BY created_at',[ids]);
+        if(found.rows.length!==ids.length)return res.status(404).json({error:'One or more orders were not found.'});
+        if(found.rows.some(x=>x.payload?.paidAt||['Paid','Verified','Cancelled'].includes(x.status)))return res.status(409).json({error:'One of these orders is already settled or cancelled.'});
+        const primaryRow=found.rows.find(x=>x.id===id)||found.rows[0];
+        const current=ids.length===1?(primaryRow.payload||{}):{...(primaryRow.payload||{}),items:found.rows.flatMap(x=>(x.payload?.items||[])),subtotal:found.rows.reduce((sum,x)=>sum+(Number(x.payload?.subtotal)|| (x.payload?.items||[]).reduce((s,it)=>s+(Number(it.price)||0)*(Number(it.qty)||1),0)),0),tableNumber:primaryRow.payload?.tableNumber||null,mergedOrderIds:ids};
         const phone = String(b.phone || current.phone || '').replace(/[^0-9+]/g,'').slice(0,16);
         const customerName = String(b.customer || current.customer || 'Walk-in customer').trim().slice(0,120);
         const subtotal = Number(current.subtotal) || (Array.isArray(current.items)?current.items.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0):0);
@@ -35,9 +38,9 @@ export default async function (req, res) {
         } else if(pointsRedeemed>0)return res.status(400).json({error:'Enter customer mobile number to redeem points.'});
         const taxable=Math.max(0,subtotal-discount),taxRate=Math.max(0,Math.min(28,Number(current.taxRate)||5)),tax=Math.round(taxable*taxRate)/100,total=Math.round(taxable+tax);
         const updated={...current,customer:customerName,phone,subtotal,discount,redeemPoints:pointsRedeemed,pointsEarned,tax,taxRate,total,paymentMethod:['Cash','UPI','Card'].includes(b.paymentMethod)?b.paymentMethod:'Cash',status:'Paid',paidAt:new Date().toISOString()};
-        await db.query("UPDATE restaurant_orders SET status='Paid',payload=$2::jsonb,verified=true,updated_at=now() WHERE id=$1",[id,JSON.stringify(updated)]);
+        for(const orderId of ids){const row=found.rows.find(x=>x.id===orderId);const paidPayload={...(row?.payload||{}),status:'Paid',paidAt:updated.paidAt,paymentMethod:updated.paymentMethod,customer:updated.customer,phone:updated.phone,groupBillId:id,groupTotal:total,groupSubtotal:subtotal,groupDiscount:discount,groupTax:tax,groupTaxRate:taxRate,groupPointsEarned:pointsEarned,groupRedeemPoints:pointsRedeemed,groupBillItems:updated.items};await db.query("UPDATE restaurant_orders SET status='Paid',payload=$2::jsonb,verified=true,updated_at=now() WHERE id=$1",[orderId,JSON.stringify(paidPayload)]);}
         if(customerRow){const balance=Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned;await db.query("UPDATE restaurant_customers SET name=$2,points=$3,visits=visits+1,status=CASE WHEN $3>=300 THEN 'VIP' ELSE 'Active' END,updated_at=now() WHERE phone=$1",[phone,customerName,balance]);}
-        if(updated.tableNumber)await db.query("UPDATE restaurant_tables SET status='Available',updated_at=now() WHERE number=$1",[updated.tableNumber]);
+        if(updated.tableNumber){const merged=await db.query('SELECT table_number FROM restaurant_table_merges WHERE primary_table_number=$1',[updated.tableNumber]);const tableNumbers=[updated.tableNumber,...merged.rows.map(x=>x.table_number)];await db.query('DELETE FROM restaurant_table_merges WHERE primary_table_number=$1 OR table_number=ANY($2::int[])',[updated.tableNumber,tableNumbers]);for(const tableNo of tableNumbers){const pending=await db.query("SELECT 1 FROM restaurant_orders WHERE status NOT IN ('Paid','Verified','Cancelled') AND COALESCE((payload->>'tableNumber')::int,0)=$1 LIMIT 1",[tableNo]);if(!pending.rows.length)await db.query("UPDATE restaurant_tables SET status='Available',updated_at=now() WHERE number=$1",[tableNo]);}}
         return res.json({ok:true,order:updated,loyalty:customerRow?{pointsBefore,pointsRedeemed,pointsEarned,pointsBalance:Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned}:null});
       }
       const status = ['Pending','Preparing','Ready','Served','Verified','Cancelled'].includes(b.status) ? b.status : null;
