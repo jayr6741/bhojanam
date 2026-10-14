@@ -158,6 +158,15 @@ button{min-height:36px}
  .sidebar>nav .nav-label{font-size:8px!important}
  .topbar>.flex{gap:4px!important}
 }
+/* Pending-bill carousel: many orders stay in a compact swipeable strip on touch screens. */
+@media (max-width:900px){
+ .pos-grid>div:first-child .pos-pending-grid{display:flex!important;flex-flow:row nowrap!important;align-items:stretch!important;gap:10px!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;padding:2px 2px 12px!important;scroll-snap-type:x mandatory!important;overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:thin!important}
+ .pos-grid>div:first-child .pos-pending-grid>.pos-pending-card{display:flex!important;flex:0 0 255px!important;width:255px!important;min-width:255px!important;max-width:255px!important;min-height:190px!important;max-height:220px!important;overflow:hidden!important;flex-direction:column!important;justify-content:flex-start!important;scroll-snap-align:start!important;padding:12px!important}
+ .pos-grid>div:first-child .pos-pending-grid>.pos-pending-card h3{margin-top:8px!important;font-size:14px!important}
+ .pos-grid>div:first-child .pos-pending-grid>.pos-pending-card .mt-3{margin-top:7px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+ .pos-grid>div:first-child .pos-pending-grid>.pos-pending-card .mt-4{margin-top:auto!important;padding-top:8px!important}
+}
+@media (max-width:430px){.pos-grid>div:first-child .pos-pending-grid>.pos-pending-card{flex-basis:235px!important;width:235px!important;min-width:235px!important;max-width:235px!important}}
 /* Final mobile billing fixes: pending bills must be full-width cards, never squeezed side-by-side. */
 @media (max-width:900px){
  .pos-grid{display:flex!important;flex-direction:column!important;gap:14px!important}
@@ -173,3 +182,6 @@ button{min-height:36px}
  .content-area{padding-bottom:150px!important}
 }
 @media (max-width:620px){.topbar{flex-wrap:nowrap!important;align-items:center!important}.topbar>.flex{width:auto!important;flex-wrap:nowrap!important;margin-left:auto!important}.topbar .hide-mobile{display:none!important}.pos-grid>div:first-child .pos-mode-tabs{display:flex!important;flex-wrap:wrap!important}.pos-grid>div:first-child .pos-mode-tabs button{flex:0 0 auto!important}.pos-grid .pos-pending-grid>*{min-height:0!important}.pos-grid .pos-pending-grid button{white-space:normal!important}.pos-grid>.surface .text-right{overflow-wrap:anywhere!important}}
+/* Final override: pending bills are horizontally swipeable on tablet/mobile, so 30+ bills do not make the page endlessly long. */
+@media (max-width:900px){.pos-grid>div:first-child .pos-pending-grid{display:flex!important;flex-flow:row nowrap!important;align-items:stretch!important;gap:10px!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;padding:2px 2px 12px!important;scroll-snap-type:x mandatory!important;overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:thin!important}.pos-grid>div:first-child .pos-pending-grid>.pos-pending-card{display:flex!important;flex:0 0 255px!important;width:255px!important;min-width:255px!important;max-width:255px!important;min-height:190px!important;max-height:220px!important;overflow:hidden!important;flex-direction:column!important;justify-content:flex-start!important;scroll-snap-align:start!important;padding:12px!important}.pos-grid>div:first-child .pos-pending-grid>.pos-pending-card h3{margin-top:8px!important;font-size:14px!important}.pos-grid>div:first-child .pos-pending-grid>.pos-pending-card .mt-3{margin-top:7px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}.pos-grid>div:first-child .pos-pending-grid>.pos-pending-card .mt-4{margin-top:auto!important;padding-top:8px!important}}
+@media (max-width:430px){.pos-grid>div:first-child .pos-pending-grid>.pos-pending-card{flex-basis:235px!important;width:235px!important;min-width:235px!important;max-width:235px!important}}
