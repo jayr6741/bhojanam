@@ -158,3 +158,18 @@ button{min-height:36px}
  .sidebar>nav .nav-label{font-size:8px!important}
  .topbar>.flex{gap:4px!important}
 }
+/* Final mobile billing fixes: pending bills must be full-width cards, never squeezed side-by-side. */
+@media (max-width:900px){
+ .pos-grid{display:flex!important;flex-direction:column!important;gap:14px!important}
+ .pos-grid>div:first-child{display:flex!important;flex-direction:column!important;width:100%!important;max-width:100%!important;gap:12px!important}
+ .pos-grid>div:first-child .pos-pending-grid,.pos-grid>div:first-child .pos-mode-tabs+div,.pos-grid>div:first-child>div:nth-child(3){display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-auto-flow:row!important;gap:10px!important;width:100%!important;max-width:100%!important}
+ .pos-grid>div:first-child .pos-pending-grid>*,.pos-grid>div:first-child .pos-mode-tabs+div>*,.pos-grid>div:first-child>div:nth-child(3)>*{width:100%!important;min-width:0!important;max-width:100%!important}
+ .pos-grid>.surface{width:100%!important;max-width:100%!important}
+ .pos-grid>.surface .bg-paper{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+ .pos-grid>.surface .bg-paper>*{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+ .pos-grid>.surface .bg-paper button{white-space:normal!important}
+ .pos-grid>.surface .bg-paper input,.pos-grid>.surface .bg-paper select{width:100%!important;min-width:0!important}
+ .sidebar{bottom:5px!important;left:8px!important;right:8px!important;width:auto!important;max-width:calc(100vw - 16px)!important;height:56px!important}
+ .content-area{padding-bottom:150px!important}
+}
+@media (max-width:620px){.topbar{flex-wrap:nowrap!important;align-items:center!important}.topbar>.flex{width:auto!important;flex-wrap:nowrap!important;margin-left:auto!important}.topbar .hide-mobile{display:none!important}.pos-grid>div:first-child .pos-mode-tabs{display:flex!important;flex-wrap:wrap!important}.pos-grid>div:first-child .pos-mode-tabs button{flex:0 0 auto!important}.pos-grid .pos-pending-grid>*{min-height:0!important}.pos-grid .pos-pending-grid button{white-space:normal!important}.pos-grid>.surface .text-right{overflow-wrap:anywhere!important}}
