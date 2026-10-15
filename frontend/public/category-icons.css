@@ -1,0 +1,6 @@
+/* Final category label alignment: icon and label share one centered baseline */
+.pos-grid>div:first-child>div:nth-child(2) button{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;padding:6px 10px!important;line-height:1.2!important;text-align:left!important}
+.pos-grid>div:first-child>div:nth-child(2) button>span{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important}
+.pos-grid>div:first-child>div:nth-child(2) button>span:last-child{min-width:0!important;line-height:1.2!important;white-space:nowrap!important}
+.category-icon{width:18px!important;height:18px!important;flex:0 0 18px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0!important;margin:0!important;vertical-align:middle!important}
+.category-svg{width:17px!important;height:17px!important;display:block!important;flex:none!important;overflow:visible!important}
