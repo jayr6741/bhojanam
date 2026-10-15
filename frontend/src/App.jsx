@@ -4,10 +4,8 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import PosBillingPage from './pages/PosBillingPage.jsx';
 import DataPage from './pages/DataPage.jsx';
 import { apiRequest } from './services/api.js';
-
 const pages = {
-  Overview: DashboardPage,
-  'POS Billing': PosBillingPage,
+  Overview: DashboardPage, 'POS Billing': PosBillingPage,
   Orders: () => <DataPage title="Orders" description="Track active orders and their current status." endpoint="/pos/orders" />,
   'Order History': () => <DataPage title="Order History" description="Review completed and cancelled orders." endpoint="/pos/orders?history=true" />,
   Tables: () => <DataPage title="Tables" description="View table availability and occupancy." endpoint="/pos/tables" />,
@@ -19,15 +17,9 @@ const pages = {
   'QR Menu': () => <DataPage title="QR Menu" description="QR ordering and table-linked customer orders." endpoint="/qr-menu" />,
   Settings: () => <DataPage title="Settings" description="Restaurant and POS configuration." endpoint="/pos/settings" />,
 };
-
 export default function App() {
-  const [activePage, setActivePage] = useState('Overview');
-  const [apiStatus, setApiStatus] = useState('checking');
-  useEffect(() => {
-    apiRequest('/health').then(() => setApiStatus('connected')).catch(() => setApiStatus('offline'));
-  }, []);
-  const Page = pages[activePage] || DashboardPage;
-  return <AppLayout activePage={activePage} onNavigate={setActivePage} apiStatus={apiStatus}>
-    <Page onNavigate={setActivePage} />
-  </AppLayout>;
+ const [activePage,setActivePage]=useState('Overview'); const [apiStatus,setApiStatus]=useState('checking');
+ useEffect(()=>{apiRequest('/health').then(()=>setApiStatus('connected')).catch(()=>setApiStatus('offline'));},[]);
+ const Page=pages[activePage]||DashboardPage;
+ return <AppLayout activePage={activePage} onNavigate={setActivePage} apiStatus={apiStatus}><Page onNavigate={setActivePage}/></AppLayout>;
 }
