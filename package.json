@@ -1,0 +1,14 @@
+{
+  "name": "bhojanam",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bhojanam restaurant POS migration workspace",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start"
+  },
+  "devDependencies": { "concurrently": "^9.1.2" }
+}
