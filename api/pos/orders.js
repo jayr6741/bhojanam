@@ -1,4 +1,4 @@
-import { db } from 'hatchable';
+import { db, events } from 'hatchable';
 import { requirePermission } from '../../lib/pos-auth.js';
 export const access = 'public';
 export const methods = ['GET','POST','PUT'];
@@ -17,7 +17,8 @@ export default async function (req, res) {
         const nextStatus=b.action==='hold'?'Held':'Pending';
         const r=await db.query('UPDATE restaurant_orders SET status=$2,payload=jsonb_set(payload,\'{status}\',to_jsonb($2::text),true),updated_at=now() WHERE id=$1 AND status NOT IN (\'Paid\',\'Verified\',\'Cancelled\') RETURNING id,payload,status,verified,created_at',[id,nextStatus]);
         if(!r.rows.length)return res.status(404).json({error:'Open order not found or already settled.'});
-        return res.json({ok:true,order:{...r.rows[0].payload,id:r.rows[0].id,status:r.rows[0].status,verified:r.rows[0].verified,createdAt:r.rows[0].created_at}});
+        await events.publish('pos-orders','changed',{orderId:id,status}); await events.publish('pos-kitchen','changed',{orderId:id});
+      return res.json({ok:true,order:{...r.rows[0].payload,id:r.rows[0].id,status:r.rows[0].status,verified:r.rows[0].verified,createdAt:r.rows[0].created_at}});
       }
       if (b.action === 'settle') {
         if (!id) return res.status(400).json({error:'Order ID is required.'});
@@ -50,8 +51,23 @@ export default async function (req, res) {
         if(paymentMethod==='Split'&&Math.round(paymentBreakdown.onlineAmount+paymentBreakdown.cashAmount)!==Math.round(total))return res.status(400).json({error:'The online and cash amounts must equal the total due.'});
         const updated={...current,customer:customerName,phone,subtotal,discount:totalDiscount,loyaltyDiscount:discount,manualDiscount,notes:String(b.notes||current.notes||'').slice(0,500),paymentBreakdown,redeemPoints:pointsRedeemed,pointsEarned,tax,taxRate,total,paymentMethod,status:'Paid',paidAt:new Date().toISOString()};
         for(const orderId of ids){const row=found.rows.find(x=>x.id===orderId);const paidPayload={...(row?.payload||{}),status:'Paid',paidAt:updated.paidAt,paymentMethod:updated.paymentMethod,customer:updated.customer,phone:updated.phone,groupBillId:id,groupTotal:total,groupSubtotal:subtotal,groupDiscount:discount,groupTax:tax,groupTaxRate:taxRate,groupPointsEarned:pointsEarned,groupRedeemPoints:pointsRedeemed,groupBillItems:updated.items,paymentBreakdown:updated.paymentBreakdown||null};await db.query("UPDATE restaurant_orders SET status='Paid',payload=$2::jsonb,verified=true,updated_at=now() WHERE id=$1",[orderId,JSON.stringify(paidPayload)]);}
-        if(customerRow){const balance=Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned;await db.query("UPDATE restaurant_customers SET name=$2,points=$3,visits=visits+1,status=CASE WHEN $3>=300 THEN 'VIP' ELSE 'Active' END,updated_at=now() WHERE phone=$1",[phone,customerName,balance]);}
+        // Record successful tender(s) separately. Stable idempotency keys prevent duplicate entries on retries.
+        const tenders=paymentMethod==='Split'
+          ? [{method:'UPI',amount:paymentBreakdown.onlineAmount,key:'online'},{method:'Cash',amount:paymentBreakdown.cashAmount,key:'cash'}]
+          : [{method:paymentMethod==='Points'?'Other':paymentMethod,amount:total,key:'full'}];
+        for(const tender of tenders){
+          if(tender.amount<=0)continue;
+          await db.query("INSERT INTO pos_payments(id,order_id,entry_type,payment_method,amount,status,idempotency_key,cashier_user_id,metadata) VALUES($1,$2,'payment',$3,$4,'successful',$5,$6,$7::jsonb) ON CONFLICT(idempotency_key) DO NOTHING",['PAY-'+crypto.randomUUID(),id,tender.method,Number(tender.amount.toFixed(2)),id+':payment:'+tender.key,user.id,JSON.stringify({groupOrderIds:ids,source:current.source||'POS',paymentMethod})]);
+        }
+        if(customerRow){
+          const balance=Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned;
+          await db.query("UPDATE restaurant_customers SET name=$2,points=$3,visits=visits+1,status=CASE WHEN $3>=300 THEN 'VIP' ELSE 'Active' END,updated_at=now() WHERE phone=$1",[phone,customerName,balance]);
+          if(pointsRedeemed>0)await db.query("INSERT INTO pos_loyalty_ledger(id,customer_phone,order_id,entry_type,points,reason,idempotency_key,performed_by,metadata) VALUES($1,$2,$3,'redeemed',$4,'Points redeemed at checkout',$5,$6,$7::jsonb) ON CONFLICT(idempotency_key) DO NOTHING",['LOY-'+crypto.randomUUID(),phone,id,-pointsRedeemed,id+':loyalty:redeemed',user.id,JSON.stringify({subtotal,discount})]);
+          if(pointsEarned>0)await db.query("INSERT INTO pos_loyalty_ledger(id,customer_phone,order_id,entry_type,points,reason,idempotency_key,performed_by,metadata) VALUES($1,$2,$3,'earned',$4,'Points earned on paid bill',$5,$6,$7::jsonb) ON CONFLICT(idempotency_key) DO NOTHING",['LOY-'+crypto.randomUUID(),phone,id,pointsEarned,id+':loyalty:earned',user.id,JSON.stringify({eligibleSpend:Math.max(0,subtotal-totalDiscount),total})]);
+        }
+        await db.query("INSERT INTO pos_audit_logs(id,actor_user_id,actor_name,action,entity_type,entity_id,after_data,request_id) VALUES($1,$2,$3,'bill.settle','order',$4,$5::jsonb,$6)",['AUD-'+crypto.randomUUID(),user.id,user.name,id,JSON.stringify({orderIds:ids,total,paymentMethod,paymentBreakdown,customerPhone:phone||null}),String(req.headers?.['x-request-id']||'').slice(0,120)||null]);
         if(updated.tableNumber){const merged=await db.query('SELECT table_number FROM restaurant_table_merges WHERE primary_table_number=$1',[updated.tableNumber]);const tableNumbers=[updated.tableNumber,...merged.rows.map(x=>x.table_number)];await db.query('DELETE FROM restaurant_table_merges WHERE primary_table_number=$1 OR table_number=ANY($2::int[])',[updated.tableNumber,tableNumbers]);for(const tableNo of tableNumbers){const pending=await db.query("SELECT 1 FROM restaurant_orders WHERE status NOT IN ('Paid','Verified','Cancelled') AND COALESCE((payload->>'tableNumber')::int,0)=$1 LIMIT 1",[tableNo]);if(!pending.rows.length)await db.query("UPDATE restaurant_tables SET status='Available',updated_at=now() WHERE number=$1",[tableNo]);}}
+        await events.publish('pos-orders','changed',{orderId:id,status:'Paid'}); await events.publish('pos-kitchen','changed',{orderId:id}); await events.publish('pos-tables','changed',{tableNumber:updated.tableNumber||null});
         return res.json({ok:true,order:updated,loyalty:customerRow?{pointsBefore,pointsRedeemed,pointsEarned,pointsBalance:Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned}:null});
       }
       const status = ['Pending','Held','Preparing','Ready','Served','Verified','Cancelled'].includes(b.status) ? b.status : null;
@@ -102,11 +118,10 @@ export default async function (req, res) {
     const orderStatus=b.status==='Held'?'Held':'Pending';
     const order = {id,source:b.source==='QR'?'QR':'POS',tableNumber:b.tableNumber?Number(b.tableNumber):null,customer:customerName,phone,items:cleanItems,subtotal,discount:totalDiscount,manualDiscount,redeemPoints:pointsRedeemed,pointsEarned,tax,taxRate,total,paymentMethod:['Cash','UPI','Card','Split','Points','Other'].includes(b.paymentMethod)?b.paymentMethod:'Cash',paymentBreakdown,notes:String(b.notes||'').slice(0,500),status:orderStatus,createdAt:new Date().toISOString()};
     await db.query('INSERT INTO restaurant_orders (id,payload,status) VALUES ($1,$2::jsonb,$3)',[id,JSON.stringify(order),orderStatus]);
-    if (customerRow) {
-      const updatedPoints = Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned;
-      await db.query("UPDATE restaurant_customers SET name=$2,points=$3,visits=visits+1,status=CASE WHEN $3>=300 THEN 'VIP' ELSE 'Active' END,updated_at=now() WHERE phone=$1",[phone,customerName,updatedPoints]);
-    }
+    // Loyalty balances are changed only after the bill is successfully settled.
+    // New customer records may be created here, but pending/held bills never earn or redeem points.
     if (order.tableNumber) await db.query("UPDATE restaurant_tables SET status='Occupied',updated_at=now() WHERE number=$1",[order.tableNumber]);
+    await events.publish('pos-orders','changed',{orderId:id,status:orderStatus}); await events.publish('pos-kitchen','changed',{orderId:id}); if(order.tableNumber)await events.publish('pos-tables','changed',{tableNumber:order.tableNumber});
     return res.status(201).json({ok:true,order,loyalty:customerRow?{pointsBefore,pointsRedeemed,pointsEarned,pointsBalance:Math.max(0,pointsBefore-pointsRedeemed)+pointsEarned}:null});
   } catch(e) { console.error('Order operation failed',e.message); return res.status(500).json({error:'Could not save the order.'}); }
 }
