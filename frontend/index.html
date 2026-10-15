@@ -3,23 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#f7f6f2" />
-<title>Olive & Ember — Restaurant POS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{fontFamily:{sans:['DM Sans','sans-serif'],display:['Manrope','sans-serif']},colors:{ink:'#14213d',olive:'#246bfd',lime:'#dce7ff',paper:'#f5f7fb',line:'#e4e9f2',ember:'#d8754c'}}}};</script>
-<link rel="stylesheet" href="/style.css" />
-<link rel="stylesheet" href="/pos-no-images.css" />
-<link rel="stylesheet" href="/bottom-nav.css" />
-<link rel="stylesheet" href="/dashboard-reference.css" />
-<link rel="stylesheet" href="/category-icons.css" />
-<link rel="stylesheet" href="/pos-billing.css" />
-<link rel="stylesheet" href="/responsive.css" />
-<script src="/vendor/react.js"></script>
-<script src="/vendor/react-dom.js"></script>
-<script src="/vendor/htm.js"></script>
-<script src="/user-management.js" defer></script>
+<meta name="theme-color" content="#f5f7fb" />
+<title>Olive &amp; Ember — Restaurant POS</title>
 </head>
-<body class="bg-paper text-ink"><button id="mobile-nav-toggle" type="button" aria-label="Toggle navigation" onclick="const s=document.querySelector('.sidebar');const open=s?.classList.toggle('sidebar-open');this.textContent=open?'×':'☰';let o=document.getElementById('nav-backdrop');if(open&&!o){o=document.createElement('button');o.id='nav-backdrop';o.type='button';o.setAttribute('aria-label','Close navigation');o.onclick=()=>{s?.classList.remove('sidebar-open');document.getElementById('mobile-nav-toggle').textContent='☰';o.remove()};document.body.appendChild(o)}else if(!open)o?.remove()">☰</button><div id="root"><div class="p-10 text-sm text-stone-500">Loading restaurant workspace…</div></div><script>(function(){const place=()=>{const b=document.getElementById('mobile-nav-toggle');const bar=document.querySelector('.topbar');if(b&&bar&&b.parentElement!==bar){bar.insertBefore(b,bar.firstChild);b.classList.add('in-navbar')}};new MutationObserver(place).observe(document.getElementById('root'),{childList:true,subtree:true});document.addEventListener('DOMContentLoaded',place);setTimeout(place,100);setTimeout(place,500)})();</script><script src="/app.js" defer></script></body>
+<body><div id="root"><p style="padding:24px;font:14px sans-serif;color:#667085">Loading restaurant workspace…</p></div><script type="module" src="/src/main.jsx"></script></body>
 </html>
