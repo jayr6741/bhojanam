@@ -1,0 +1,3 @@
+[[cron]]
+path = "/api/jobs/expire-loyalty"
+schedule = "0 0 * * *"
