@@ -21,5 +21,5 @@
 <script src="/vendor/htm.js"></script>
 <script src="/user-management.js" defer></script>
 </head>
-<body class="bg-paper text-ink"><button id="mobile-nav-toggle" type="button" aria-label="Toggle navigation" onclick="document.querySelector('.sidebar')?.classList.toggle('sidebar-open');this.textContent=document.querySelector('.sidebar')?.classList.contains('sidebar-open')?'×':'☰'">☰</button><div id="root"><div class="p-10 text-sm text-stone-500">Loading restaurant workspace…</div></div><script src="/app.js" defer></script></body>
+<body class="bg-paper text-ink"><button id="mobile-nav-toggle" type="button" aria-label="Toggle navigation" onclick="const s=document.querySelector('.sidebar');const open=s?.classList.toggle('sidebar-open');this.textContent=open?'×':'☰';let o=document.getElementById('nav-backdrop');if(open&&!o){o=document.createElement('button');o.id='nav-backdrop';o.type='button';o.setAttribute('aria-label','Close navigation');o.onclick=()=>{s?.classList.remove('sidebar-open');document.getElementById('mobile-nav-toggle').textContent='☰';o.remove()};document.body.appendChild(o)}else if(!open)o?.remove()">☰</button><div id="root"><div class="p-10 text-sm text-stone-500">Loading restaurant workspace…</div></div><script src="/app.js" defer></script></body>
 </html>
