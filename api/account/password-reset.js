@@ -1,0 +1,19 @@
+import { db, email } from 'hatchable';
+import { makePasswordHash } from '../../lib/pos-auth.js';
+export const access='public';
+export const methods=['POST'];
+async function tokenHash(token){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(token)));return btoa(String.fromCharCode(...new Uint8Array(buf)));}
+function escapeHtml(s){return String(s||'').split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;').split('"').join('&quot;');}
+export default async function(req,res){try{
+ const b=req.body||{};const action=String(b.action||'request');
+ if(action==='request'){
+  const address=String(b.email||'').trim().toLowerCase();if(!address.includes('@')||!address.includes('.'))return res.status(400).json({error:'Enter a valid email address.'});
+  const found=await db.query('SELECT id,full_name,email FROM pos_users WHERE lower(email)=$1 AND active=true',[address]);
+  if(found.rows.length){const u=found.rows[0],token=crypto.randomUUID()+crypto.randomUUID(),hash=await tokenHash(token);await db.query('DELETE FROM pos_password_reset_tokens WHERE user_id=$1 OR expires_at<=now()',[u.id]);await db.query('INSERT INTO pos_password_reset_tokens(token_hash,user_id,expires_at) VALUES($1,$2,now()+interval \'30 minutes\')',[hash,u.id]);let base=String(req.headers?.origin||'https://restaurant-pos-2u7e.hatchable.site');if(base.endsWith('/'))base=base.slice(0,-1);const url=base+'/?resetToken='+encodeURIComponent(token);try{await email.send({to:u.email,subject:'Reset your Olive & Ember POS password',text:'Hello '+u.full_name+',\\n\\nUse this link to reset your POS password within 30 minutes: '+url+'\\n\\nIf you did not request this, ignore this email.',html:'<p>Hello '+escapeHtml(u.full_name)+',</p><p>Use the link below to reset your POS password. It expires in 30 minutes and can be used once.</p><p><a href="'+url+'">Reset password</a></p><p>If you did not request this, ignore this email.</p>'});}catch(mailError){console.error('Password reset email failed',mailError.message);return res.status(503).json({error:'Email could not be sent. Please try again later or contact the administrator.'});}}
+  return res.json({ok:true,message:'If an active account uses that email, a password reset link has been sent.'});
+ }
+ if(action==='reset'){
+  const token=String(b.token||''),password=String(b.password||'');if(!token||password.length<10)return res.status(400).json({error:'Use a valid reset link and a password of at least 10 characters.'});const hash=await tokenHash(token);const found=await db.query('SELECT user_id FROM pos_password_reset_tokens WHERE token_hash=$1 AND used_at IS NULL AND expires_at>now()',[hash]);if(!found.rows.length)return res.status(400).json({error:'This reset link is invalid or expired. Request a new one.'});const userId=found.rows[0].user_id;const changed=await db.query('UPDATE pos_users SET password_hash=$2,must_change_password=false,updated_at=now() WHERE id=$1 AND active=true RETURNING id',[userId,await makePasswordHash(password)]);if(!changed.rows.length)return res.status(400).json({error:'Account is inactive or unavailable.'});await db.query('UPDATE pos_password_reset_tokens SET used_at=now() WHERE token_hash=$1',[hash]);await db.query('DELETE FROM pos_sessions WHERE user_id=$1',[userId]);await db.query('DELETE FROM pos_password_reset_tokens WHERE user_id=$1 AND token_hash<>$2',[userId,hash]);return res.json({ok:true,message:'Password reset successfully. Please sign in.'});
+ }
+ return res.status(400).json({error:'Unsupported password-reset action.'});
+ }catch(e){console.error('Password reset failed',e.message);return res.status(500).json({error:'Could not process password reset.'});}}

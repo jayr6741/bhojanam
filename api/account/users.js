@@ -44,6 +44,7 @@ export default async function(req,res){
     if(req.method==='PUT'&&b.action==='updateUser'){
       const userId=String(b.userId||''),name=String(b.name||'').trim().slice(0,100),roleId=String(b.roleId||''),active=b.active!==false;
       if(!userId||!name||!roleId)return res.status(400).json({error:'Name, user and role are required.'});
+      const roleCheck=await db.query('SELECT id FROM pos_roles WHERE id=$1',[roleId]);if(!roleCheck.rows.length)return res.status(400).json({error:'Selected role no longer exists. Refresh roles and try again.'});
       if(userId===actor.id&&!active)return res.status(400).json({error:'You cannot deactivate your own account.'});
       const target=await db.query("SELECT u.id,r.name AS role_name FROM pos_users u JOIN pos_roles r ON r.id=u.role_id WHERE u.id=$1",[userId]);
       if(!target.rows.length)return res.status(404).json({error:'User not found.'});
