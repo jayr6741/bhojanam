@@ -1,1 +1,0 @@
-UPDATE pos_roles SET permissions=permissions || '["manage_backups"]'::jsonb,updated_at=now() WHERE name='Admin' AND NOT permissions @> '["manage_backups"]'::jsonb;

@@ -15,7 +15,7 @@ export default async function(req,res){
     }
     const b=req.body||{};
     if(req.method==='POST'&&b.action==='createRole'){
-      const name=String(b.name||'').trim().slice(0,50);let permissions=Array.isArray(b.permissions)?[...new Set(b.permissions.filter(x=>PERMISSIONS.includes(x)))]:[];if(actor.role!=='Super Admin')permissions=permissions.filter(x=>!['manage_backups','manage_roles'].includes(x));
+      const name=String(b.name||'').trim().slice(0,50);const permissions=Array.isArray(b.permissions)?[...new Set(b.permissions.filter(x=>PERMISSIONS.includes(x)))]:[];
       if(!name)return res.status(400).json({error:'Role name is required.'});
       const id='role-'+crypto.randomUUID();
       const r=await db.query('INSERT INTO pos_roles(id,name,permissions,is_system) VALUES($1,$2,$3::jsonb,false) ON CONFLICT(name) DO NOTHING RETURNING id,name,permissions,is_system',[id,name,JSON.stringify(permissions)]);
@@ -26,17 +26,16 @@ export default async function(req,res){
       const name=String(b.name||'').trim().slice(0,100),email=String(b.email||'').trim().toLowerCase(),password=String(b.password||''),roleId=String(b.roleId||'');
       if(!name||!email||!/^\S+@\S+\.\S+$/.test(email))return res.status(400).json({error:'Enter a name and valid email.'});
       if(password.length<10)return res.status(400).json({error:'Temporary password must be at least 10 characters.'});
-      const role=await db.query('SELECT id,name FROM pos_roles WHERE id=$1',[roleId]);if(!role.rows.length)return res.status(400).json({error:'Choose a valid role.'});if(role.rows[0].name==='Super Admin'&&actor.role!=='Super Admin')return res.status(403).json({error:'Only a Super Admin can assign the Super Admin role.'});
+      const role=await db.query('SELECT id FROM pos_roles WHERE id=$1',[roleId]);if(!role.rows.length)return res.status(400).json({error:'Choose a valid role.'});
       const id='user-'+crypto.randomUUID();
       const r=await db.query('INSERT INTO pos_users(id,full_name,email,password_hash,role_id,must_change_password) VALUES($1,$2,$3,$4,$5,true) ON CONFLICT(email) DO NOTHING RETURNING id,full_name,email,active,role_id',[id,name,email,await makePasswordHash(password),roleId]);
       if(!r.rows.length)return res.status(409).json({error:'A user with this email already exists.'});
       return res.status(201).json({ok:true,user:{id:r.rows[0].id,name:r.rows[0].full_name,email:r.rows[0].email,active:r.rows[0].active,roleId:r.rows[0].role_id}});
     }
     if(req.method==='PUT'&&b.action==='updateRole'){
-      const roleId=String(b.roleId||''),name=String(b.name||'').trim().slice(0,50);let permissions=Array.isArray(b.permissions)?[...new Set(b.permissions.filter(x=>PERMISSIONS.includes(x)))]:[];if(actor.role!=='Super Admin')permissions=permissions.filter(x=>!['manage_backups','manage_roles'].includes(x));
+      const roleId=String(b.roleId||''),name=String(b.name||'').trim().slice(0,50);let permissions=Array.isArray(b.permissions)?[...new Set(b.permissions.filter(x=>PERMISSIONS.includes(x)))]:[];
       if(!roleId||!name)return res.status(400).json({error:'Role and role name are required.'});
       const oldRole=await db.query('SELECT name,is_system FROM pos_roles WHERE id=$1',[roleId]);if(!oldRole.rows.length)return res.status(404).json({error:'Role not found.'});
-      if(oldRole.rows[0].name==='Admin'&&actor.role!=='Super Admin'&&!permissions.includes('manage_backups'))permissions.push('manage_backups');
       if(oldRole.rows[0].name==='Admin'){if(!permissions.includes('user_management'))permissions.push('user_management');if(!permissions.includes('view_dashboard'))permissions.push('view_dashboard');}
       const r=await db.query('UPDATE pos_roles SET name=CASE WHEN is_system THEN name ELSE $2 END,permissions=$3::jsonb,updated_at=now() WHERE id=$1 RETURNING id,name,permissions,is_system',[roleId,name,JSON.stringify(permissions)]);
       if(!r.rows.length)return res.status(404).json({error:'Role not found.'});
@@ -45,11 +44,10 @@ export default async function(req,res){
     if(req.method==='PUT'&&b.action==='updateUser'){
       const userId=String(b.userId||''),name=String(b.name||'').trim().slice(0,100),roleId=String(b.roleId||''),active=b.active!==false;
       if(!userId||!name||!roleId)return res.status(400).json({error:'Name, user and role are required.'});
-      const roleCheck=await db.query('SELECT id,name FROM pos_roles WHERE id=$1',[roleId]);if(!roleCheck.rows.length)return res.status(400).json({error:'Selected role no longer exists. Refresh roles and try again.'});if(roleCheck.rows[0].name==='Super Admin'&&actor.role!=='Super Admin')return res.status(403).json({error:'Only a Super Admin can assign the Super Admin role.'});
+      const roleCheck=await db.query('SELECT id FROM pos_roles WHERE id=$1',[roleId]);if(!roleCheck.rows.length)return res.status(400).json({error:'Selected role no longer exists. Refresh roles and try again.'});
       if(userId===actor.id&&!active)return res.status(400).json({error:'You cannot deactivate your own account.'});
       const target=await db.query("SELECT u.id,r.name AS role_name FROM pos_users u JOIN pos_roles r ON r.id=u.role_id WHERE u.id=$1",[userId]);
       if(!target.rows.length)return res.status(404).json({error:'User not found.'});
-      if(target.rows[0].role_name==='Super Admin'&&actor.role!=='Super Admin')return res.status(403).json({error:'Only a Super Admin can modify a Super Admin account.'});
       if(target.rows[0].role_name==='Admin'&&(roleId!=='role-admin'||!active)){
         const n=await db.query("SELECT count(*)::int AS n FROM pos_users u JOIN pos_roles r ON r.id=u.role_id WHERE r.name='Admin' AND u.active=true");
         if(n.rows[0].n<=1)return res.status(400).json({error:'Keep at least one active admin.'});
